@@ -6,10 +6,15 @@
 import React, { PureComponent } from 'react';
 import { Layout } from 'antd';
 import ErrorBoundary from '../ErrorBoundary';
-// import axios from 'axios'
+import axios from 'axios'
 /**
  * ContentArea comonent
  */
+interface Iresponse {
+	preset:string;
+  cloud_name:string;
+}
+
 class ContentArea extends PureComponent<App.IContentAreaProps> {
 	/**
 	 * Component did mount
@@ -20,11 +25,23 @@ class ContentArea extends PureComponent<App.IContentAreaProps> {
 			initialLoader.parentNode.removeChild(initialLoader);
 		}
 	};
-	uploadToClodinary = async (uri: string, data: any) => {
-		// const res = await axios.post(uri, data);
+
+	uploadToCloudinary = async (uri: string, data: any) => {
+		const res = await axios.post(uri, data);
+		console.log(res);
+	};
+
+	uploadToApi = async (uri: string, data: any) => {
+		const res: Iresponse = await axios.post(uri, data);
 		console.log(data.get('file'));
-    console.log(data.get('folder'));
+		console.log(data.get('folder'));
 		console.log('called ', uri);
+		const form = new FormData();
+		form.append('file', data.get('file'));
+		form.append('upload_preset', res.preset);
+		form.append('cloud_name', res.cloud_name);
+		form.append('folder', data.get('folder'));
+		this.uploadToCloudinary(`https://api.cloudinary.com/v1_1/${res.cloud_name}/image/upload`, form);
 	};
 
 	uploadImage = (e: any): void => {
@@ -33,9 +50,9 @@ class ContentArea extends PureComponent<App.IContentAreaProps> {
 			reader.readAsDataURL(e.target.files[0]);
 			const data = new FormData();
 			// data.append('file', e.target.files[0]);
-			data.append('folder', 'test_practice');
+			data.append('folder', 'p1/test_practice');
 			const uri = '';
-			this.uploadToClodinary(uri, data);
+			this.uploadToApi(uri, data);
 		}
 	};
 	/**
@@ -47,7 +64,7 @@ class ContentArea extends PureComponent<App.IContentAreaProps> {
 		return (
 			<Layout.Content>
 				<ErrorBoundary>
-					<input type='file' accept='images/*' onChange={this.uploadImage} style={{margin:'10em 10em'}}/>
+					<input type='file' accept='images/*' onChange={this.uploadImage} style={{ margin: '10em 10em' }} />
 				</ErrorBoundary>
 			</Layout.Content>
 		);
