@@ -11,8 +11,10 @@ import axios from 'axios'
  * ContentArea comonent
  */
 interface Iresponse {
+	data:{
 	preset:string;
-  cloud_name:string;
+  	cloud_name:string;
+}
 }
 
 class ContentArea extends PureComponent<App.IContentAreaProps> {
@@ -31,28 +33,28 @@ class ContentArea extends PureComponent<App.IContentAreaProps> {
 		console.log(res);
 	};
 
-	uploadToApi = async (uri: string, data: any) => {
-		const res: Iresponse = await axios.post(uri, data);
-		console.log(data.get('file'));
-		console.log(data.get('folder'));
-		console.log('called ', uri);
+	uploadToApi = async (uri: string, data: any, File: any) => {
+		const res: Iresponse = await axios.get(uri, {params:{
+			username: data
+		}});
+		console.log(res);
 		const form = new FormData();
-		form.append('file', data.get('file'));
-		form.append('upload_preset', res.preset);
-		form.append('cloud_name', res.cloud_name);
-		form.append('folder', data.get('folder'));
-		this.uploadToCloudinary(`https://api.cloudinary.com/v1_1/${res.cloud_name}/image/upload`, form);
+		form.append('file', File);
+		form.append('upload_preset', res.data.preset);
+		form.append('cloud_name', res.data.cloud_name);
+		form.append('folder', data);
+		this.uploadToCloudinary(`https://api.cloudinary.com/v1_1/${res.data.cloud_name}/image/upload`, form);
 	};
 
 	uploadImage = (e: any): void => {
 		if (e.target.files[0] && e.target.files.length) {
 			const reader = new FileReader();
 			reader.readAsDataURL(e.target.files[0]);
-			const data = new FormData();
+			const data = "string"
+			//data.append('user', 'test_practice')
 			// data.append('file', e.target.files[0]);
-			data.append('folder', 'p1/test_practice');
-			const uri = '';
-			this.uploadToApi(uri, data);
+			const uri = 'http://localhost:8001/api/v1/preset/send';
+			this.uploadToApi(uri, data , e.target.files[0]);
 		}
 	};
 	/**
