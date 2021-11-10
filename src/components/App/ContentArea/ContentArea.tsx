@@ -6,16 +6,10 @@
 import React, { PureComponent } from 'react';
 import { Layout } from 'antd';
 import ErrorBoundary from '../ErrorBoundary';
-import axios from 'axios'
+import ImageUpload from '../../imageUpload/imageupload';
 /**
  * ContentArea comonent
  */
-interface Iresponse {
-	data:{
-	preset:string;
-  	cloud_name:string;
-}
-}
 
 class ContentArea extends PureComponent<App.IContentAreaProps> {
 	/**
@@ -28,35 +22,8 @@ class ContentArea extends PureComponent<App.IContentAreaProps> {
 		}
 	};
 
-	uploadToCloudinary = async (uri: string, data: any) => {
-		const res = await axios.post(uri, data);
-		console.log(res);
-	};
 
-	uploadToApi = async (uri: string, data: any, File: any) => {
-		const res: Iresponse = await axios.get(uri, {params:{
-			username: data
-		}});
-		console.log(res);
-		const form = new FormData();
-		form.append('file', File);
-		form.append('upload_preset', res.data.preset);
-		form.append('cloud_name', res.data.cloud_name);
-		form.append('folder', data);
-		this.uploadToCloudinary(`https://api.cloudinary.com/v1_1/${res.data.cloud_name}/image/upload`, form);
-	};
 
-	uploadImage = (e: any): void => {
-		if (e.target.files[0] && e.target.files.length) {
-			const reader = new FileReader();
-			reader.readAsDataURL(e.target.files[0]);
-			const data = "string"
-			//data.append('user', 'test_practice')
-			// data.append('file', e.target.files[0]);
-			const uri = 'http://localhost:8001/api/v1/preset/send';
-			this.uploadToApi(uri, data , e.target.files[0]);
-		}
-	};
 	/**
 	 * ContentArea Renderer
 	 *
@@ -66,7 +33,7 @@ class ContentArea extends PureComponent<App.IContentAreaProps> {
 		return (
 			<Layout.Content>
 				<ErrorBoundary>
-					<input type='file' accept='images/*' onChange={this.uploadImage} style={{ margin: '10em 10em' }} />
+					<ImageUpload />
 				</ErrorBoundary>
 			</Layout.Content>
 		);
