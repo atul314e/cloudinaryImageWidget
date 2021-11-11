@@ -14,13 +14,13 @@ interface Iresponse {
 }
 
 interface IApiData {
-	public_id: string;
-	secure_url: string;
-	image_title: string;
-	image_alt_text: string;
+	pub_id: string;
+	src_url: string;
+	title: string;
+	alt_text: string;
 	height: number;
 	width: number;
-	created_at:Date;
+	creation_time:Date;
 }
 
 const ImageUpload = ()=>{
@@ -40,13 +40,13 @@ const ImageUpload = ()=>{
 			let created_at = val.data.created_at;
 
 			let data = {
-				public_id: public_id,
-				secure_url: secure_url,
-				image_title: image_title,
-				image_alt_text: image_alt_text,
+				pub_id: public_id,
+				src_url: secure_url,
+				title: image_title,
+				alt_text: image_alt_text,
 				height: height,
 				width: width,
-				created_at: created_at,
+				creation_time: created_at,
 			};
 			responseArray.push(data);
 		});
