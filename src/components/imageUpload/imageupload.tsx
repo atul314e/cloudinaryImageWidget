@@ -14,7 +14,6 @@ interface Iresponse {
 }
 
 interface IApiData {
-	uri: string;
 	public_id: string;
 	secure_url: string;
 	image_title: string;
@@ -41,7 +40,6 @@ const ImageUpload = ()=>{
 			let created_at = val.data.created_at;
 
 			let data = {
-				uri: uri,
 				public_id: public_id,
 				secure_url: secure_url,
 				image_title: image_title,
@@ -91,21 +89,22 @@ const ImageUpload = ()=>{
 
   const uploadImage = (e: any): void => {
     if (e.target.files[0] && e.target.files.length) {
-      const file_data:File[] = [];
-      // adding all files to file_data array
-      _.range(0, e.target.files.length).forEach((current, index, range)=>{
-        console.log(current, range);
-        let file = e.target.files[index];
-        file_data.push(file);
-      });
+		const file_data: File[] = [];
+		setFileDataForApi([]); // to remove already present files in filedataForApi state variable
+		// adding all files to file_data array
+		_.range(0, e.target.files.length).forEach((current, index, range) => {
+			console.log(current, range);
+			let file = e.target.files[index];
+			file_data.push(file);
+		});
 
-      const data = 'string';
-      //data.append('user', 'test_practice')
-      // data.append('file', e.target.files[0]);
-      const uri = 'http://localhost:8001/api/v1/preset/send';
-      //console.log(file_data);
-      uploadToApi(uri, data, file_data);
-    }
+		const data = 'string';
+		//data.append('user', 'test_practice')
+		// data.append('file', e.target.files[0]);
+		const uri = 'http://localhost:8001/api/v1/preset/send';
+		//console.log(file_data);
+		uploadToApi(uri, data, file_data);
+	}
   };
   return <input type='file' accept='images/*' onChange={uploadImage} style={{ margin: '10em 10em' }} />;
 }
