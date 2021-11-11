@@ -25,7 +25,7 @@ interface IApiData {
 }
 
 const ImageUpload = ()=>{
-  const [filedataForApi, setFileDataForApi] = useState([null])
+  const [filedataForApi, setFileDataForApi] = useState<any>([])
 
   const saveToApi = async (res: any) => {
 		const uri = 'http://localhost:8001/api/v1/preset/update';
@@ -60,7 +60,7 @@ const ImageUpload = ()=>{
   const uploadToCloudinary = async (uri: string, data: any) => {
     return await axios.post(uri, data).then((response)=>{
       //console.log(response)
-      setFileDataForApi([...filedataForApi, response.data.data]);
+      setFileDataForApi([...filedataForApi, response.data]);
     });
   };
 
