@@ -24,7 +24,7 @@ interface IApiData {
 }
 
 const ImageUpload = ()=>{
-  const [filedataForApi, setFileDataForApi] = useState([null])
+  const [filedataForApi, setFileDataForApi] = useState<any>([])
 
   const saveToApi = async (res: any) => {
 		const uri = 'http://localhost:8001/api/v1/preset/update';
@@ -58,7 +58,7 @@ const ImageUpload = ()=>{
   const uploadToCloudinary = async (uri: string, data: any) => {
     return await axios.post(uri, data).then((response)=>{
       //console.log(response)
-      setFileDataForApi([...filedataForApi, response.data.data]);
+      setFileDataForApi([...filedataForApi, response.data]);
     });
   };
 
@@ -89,21 +89,22 @@ const ImageUpload = ()=>{
 
   const uploadImage = (e: any): void => {
     if (e.target.files[0] && e.target.files.length) {
-      const file_data:File[] = [];
-      // adding all files to file_data array
-      _.range(0, e.target.files.length).forEach((current, index, range)=>{
-        console.log(current, range);
-        let file = e.target.files[index];
-        file_data.push(file);
-      });
+		const file_data: File[] = [];
+		setFileDataForApi([]); // to remove already present files in filedataForApi state variable
+		// adding all files to file_data array
+		_.range(0, e.target.files.length).forEach((current, index, range) => {
+			console.log(current, range);
+			let file = e.target.files[index];
+			file_data.push(file);
+		});
 
-      const data = 'string';
-      //data.append('user', 'test_practice')
-      // data.append('file', e.target.files[0]);
-      const uri = 'http://localhost:8001/api/v1/preset/send';
-      //console.log(file_data);
-      uploadToApi(uri, data, file_data);
-    }
+		const data = 'string';
+		//data.append('user', 'test_practice')
+		// data.append('file', e.target.files[0]);
+		const uri = 'http://localhost:8001/api/v1/preset/send';
+		//console.log(file_data);
+		uploadToApi(uri, data, file_data);
+	}
   };
   return <input type='file' accept='images/*' onChange={uploadImage} style={{ margin: '10em 10em' }} />;
 }
