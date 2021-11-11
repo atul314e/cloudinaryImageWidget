@@ -74,7 +74,7 @@ const ImageUpload = ()=>{
 
     // bulk uploading to cloudinary
     const allUpload =
-       _.forEach(File, (val) => {
+       _.map(File, (val) => {
         let form = new FormData();
         form.append('file', val);
         form.append('upload_preset', res.data.preset);
