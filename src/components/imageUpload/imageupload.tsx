@@ -55,9 +55,9 @@ const ImageUpload = ()=>{
 		console.log(response);
   };
 
-  const uploadToCloudinary = (uri: string, data: any) => {
-    return axios.post(uri, data).then((response)=>{
-      console.log(response)
+  const uploadToCloudinary = async (uri: string, data: any) => {
+    return await axios.post(uri, data).then((response)=>{
+      //console.log(response)
       setFileDataForApi([...filedataForApi, response.data.data]);
     });
   };
@@ -82,7 +82,7 @@ const ImageUpload = ()=>{
       });
 
     // after action when all files uploaded to cloudinary
-    axios.all(allUpload).then(() => {
+    await axios.all(allUpload).then(() => {
         saveToApi(filedataForApi);
 	  });
   };
@@ -101,6 +101,7 @@ const ImageUpload = ()=>{
       //data.append('user', 'test_practice')
       // data.append('file', e.target.files[0]);
       const uri = 'http://localhost:8001/api/v1/preset/send';
+      //console.log(file_data);
       uploadToApi(uri, data, file_data);
     }
   };
