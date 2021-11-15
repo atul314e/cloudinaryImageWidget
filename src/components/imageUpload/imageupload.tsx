@@ -29,8 +29,8 @@ const setFileDataForApi = (data:any)=>{
 
 const ImageUpload = ()=>{
   //const [filedataForApi, setFileDataForApi] = useState<any>([])
-  
-  
+
+
   const saveToApi = async (res: any) => {
 		const uri = 'http://localhost:8001/api/v1/preset/update';
 		const responseArray: IApiData[] = []; // array of object from cloudinary response
@@ -97,7 +97,7 @@ console.log(allUpload)
   const uploadImage = (e: any): void => {
     if (e.target.files[0] && e.target.files.length) {
 		const file_data: File[] = [];
-		filedataForApi = [] 
+		filedataForApi = []
 		//setFileDataForApi([]); // to remove already present files in filedataForApi state variable
 		// adding all files to file_data array
 		_.range(0, e.target.files.length).forEach((current, index, range) => {
@@ -114,7 +114,7 @@ console.log(allUpload)
 		uploadToApi(uri, data, file_data);
 	}
   };
-  return <input type='file' accept='images/*' onChange={uploadImage} style={{ margin: '10em 10em' }} />;
+  return <input type='file' accept='images/*' onChange={uploadImage} style={{ margin: '10em 10em' }} multiple />;
 }
 
 export default ImageUpload;
