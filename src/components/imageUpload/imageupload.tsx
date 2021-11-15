@@ -3,7 +3,7 @@
  * @description Content Area Component, contains route mapping
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import _ from 'lodash';
 import axios from 'axios';
 interface Iresponse {
@@ -22,22 +22,27 @@ interface IApiData {
 	width: number;
 	creation_time:Date;
 }
+let filedataForApi:any = []
+const setFileDataForApi = (data:any)=>{
+	filedataForApi.push(data)
+}
 
 const ImageUpload = ()=>{
-  const [filedataForApi, setFileDataForApi] = useState<any>([])
-
+  //const [filedataForApi, setFileDataForApi] = useState<any>([])
+  
+  
   const saveToApi = async (res: any) => {
 		const uri = 'http://localhost:8001/api/v1/preset/update';
 		const responseArray: IApiData[] = []; // array of object from cloudinary response
 
 		_.forEach(res, (val) => {
-			let public_id = val.data.public_id;
-			let secure_url = val.data.secure_url;
-			let image_title = val.data.original_filename;
-			let image_alt_text = val.data.original_filename;
-			let height = val.data.height;
-			let width = val.data.width;
-			let created_at = val.data.created_at;
+			let public_id = val.public_id;
+			let secure_url = val.secure_url;
+			let image_title = val.public_id.split('/')[1];
+			let image_alt_text = val.public_id.split('/')[1];;
+			let height = val.height;
+			let width = val.width;
+			let created_at = val.created_at;
 
 			let data = {
 				pub_id: public_id,
@@ -48,17 +53,18 @@ const ImageUpload = ()=>{
 				width: width,
 				creation_time: created_at,
 			};
+      console.log("Hello");
 			responseArray.push(data);
 		});
-
+		console.log(responseArray)
 		const response = await axios.post(uri, responseArray);
 		console.log(response);
   };
 
   const uploadToCloudinary = async (uri: string, data: any) => {
     return await axios.post(uri, data).then((response)=>{
-      //console.log(response)
-      setFileDataForApi([...filedataForApi, response.data]);
+      console.log(response)
+      setFileDataForApi(response.data);
     });
   };
 
@@ -68,21 +74,22 @@ const ImageUpload = ()=>{
         username: data,
       },
     });
-    //console.log(res);
+    console.log(res);
 
     // bulk uploading to cloudinary
     const allUpload =
-       _.map(File, (val) => {
+       _.map(File,async (val) => {
         let form = new FormData();
         form.append('file', val);
         form.append('upload_preset', res.data.preset);
         form.append('cloud_name', res.data.cloud_name);
         form.append('folder', data);
-        return uploadToCloudinary(`https://api.cloudinary.com/v1_1/${res.data.cloud_name}/image/upload`, form);
+        return await uploadToCloudinary(`https://api.cloudinary.com/v1_1/${res.data.cloud_name}/image/upload`, form);
       });
-
+console.log(allUpload)
     // after action when all files uploaded to cloudinary
     await axios.all(allUpload).then(() => {
+
         saveToApi(filedataForApi);
 	  });
   };
@@ -90,7 +97,8 @@ const ImageUpload = ()=>{
   const uploadImage = (e: any): void => {
     if (e.target.files[0] && e.target.files.length) {
 		const file_data: File[] = [];
-		setFileDataForApi([]); // to remove already present files in filedataForApi state variable
+		filedataForApi = [] 
+		//setFileDataForApi([]); // to remove already present files in filedataForApi state variable
 		// adding all files to file_data array
 		_.range(0, e.target.files.length).forEach((current, index, range) => {
 			console.log(current, range);
