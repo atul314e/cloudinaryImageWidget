@@ -32,7 +32,7 @@ const ImageUpload = ()=>{
 
 
   const saveToApi = async (res: any) => {
-		const uri = 'http://localhost:8001/api/v1/preset/update';
+		const uri = 'http://localhost:8001/api/v1/imagedata/';
 		const responseArray: IApiData[] = []; // array of object from cloudinary response
 
 		_.forEach(res, (val) => {
@@ -109,7 +109,7 @@ console.log(allUpload)
 		const data = 'string';
 		//data.append('user', 'test_practice')
 		// data.append('file', e.target.files[0]);
-		const uri = 'http://localhost:8001/api/v1/preset/send';
+		const uri = 'http://localhost:8001/api/v1/imagedata/send';
 		//console.log(file_data);
 		uploadToApi(uri, data, file_data);
 	}
